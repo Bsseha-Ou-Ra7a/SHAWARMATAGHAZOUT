@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chawarma Taghazout</title>
+    <style>
+        :root {
+            --green: #1e6029;
+            --orange: #d18d1a;
+            --bg: #f4f7f6;
+        }
+
+        body {
+            /* هاد الخط هو لي كيعطي المنظر لي عجبك */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            color: #222;
+            text-align: center;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 25px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--green);
+            background: white;
+        }
+
+        .header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            color: var(--green);
+            margin: 15px 0 5px;
+            font-weight: 800; /* خط غليظ */
+            font-size: 1.6rem;
+        }
+
+        .slogan {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* MENU */
+        .menu {
+            width: 92%;
+            max-width: 480px;
+            margin: auto;
+        }
+
+        .item {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            border-right: 6px solid var(--green);
+        }
+
+        .item-info {
+            text-align: right;
+        }
+
+        .item-name {
+            display: block;
+            font-weight: 800; /* خط غليظ للوجبة */
+            font-size: 1.15rem;
+            color: var(--green);
+            margin-bottom: 3px;
+        }
+
+        .item-price {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--green);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.85);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .box {
+            background: white;
+            width: 85%;
+            max-width: 360px;
+            margin: 15% auto;
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .wa {
+            background: #25d366;
+            color: white;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 800;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        .close {
+            margin-top: 15px;
+            cursor: pointer;
+            color: #888;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://i.ibb.co/BXKJmvn/IMG-9452.jpg" alt="Chawarma Taghazout">
+        </div>
+        <h1>Chawarma Taghazout</h1>
+        <p class="slogan">مذاق تغازوت الأصلي 🔥</p>
+    </div>
+
+    <div class="menu">
+        <div class="item">
+            <div class="item-info">
+                <span class="item-name">شاورما دجاج</span>
+                <span class="item-price">35 DH</span>
+            </div>
+            <button class="btn" onclick="openOrder('شاورما دجاج', '35 DH')">طلب</button>
+        </div>
+
+        <div class="item">
+            <div class="item-info">
+                <span class="item-name">شاورما لحم</span>
+                <span class="item-price">45 DH</span>
+            </div>
+            <button class="btn" onclick="openOrder('شاورما لحم', '45 DH')">طلب</button>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="box">
+            <h3 id="title" style="color: var(--green); font-weight: 800;"></h3>
+            <input id="name" placeholder="الإسم الكامل">
+            <input id="phoneInput" placeholder="رقم الهاتف">
+            <input id="addr" placeholder="العنوان السكني">
+            <textarea id="note" placeholder="ملاحظات (بدون بصل، حار...)"></textarea>
+            <a id="wa" class="wa" href="#">تأكيد الطلب عبر واتساب</a>
+            <div class="close" onclick="closeModal()">إلغاء</div>
+        </div>
+    </div>
+
+    <script>
+        let selected = "";
+        const restaurantPhone = "2126XXXXXXXX"; // حط نمرتهم هنا
+
+        function openOrder(name, price) {
+            selected = name + " (" + price + ")";
+            document.getElementById("title").innerText = "طلب: " + name;
+            document.getElementById("modal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        document.getElementById("wa").onclick = function(e) {
+            const name = document.getElementById("name").value;
+            const addr = document.getElementById("addr").value;
+            const uPhone = document.getElementById("phoneInput").value;
+            const note = document.getElementById("note").value || "بدون ملاحظات";
+
+            if(!name || !addr || !uPhone) { 
+                alert("يرجى ملء جميع الخانات لإكمال طلبك"); 
+                return; 
+            }
+
+            const msg = `*طلب جديد*%0A------------------%0A🍔 *الوجبة:* ${selected}%0A👤 *الإسم:* ${name}%0A📞 *الهاتف:* ${uPhone}%0A📍 *العنوان:* ${addr}%0A📝 *ملاحظات:* ${note}`;
+            this.href = `https://wa.me/${restaurantPhone}?text=${msg}`;
+        }
+    </script>
+</body>
+</html>
